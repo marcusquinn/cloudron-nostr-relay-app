@@ -23,7 +23,8 @@ Community Apps submission is the stated end goal and needs maintainer credential
 3. Install: `cloudron install --versions-url <PUBLIC_VERSIONS_URL> --location relay-test`.
 4. Qualify: add your npub to `/app/data/allowlist.txt`; publish from a Nostr client with that key (accepted) and with another key (rejected); NIP-11 info shows the configured name/contact; restart, update and backup/restore keep events and the allowlist.
 5. Sign in at [Cloudron Community Apps](https://ca.cloudron.io), add the versions URL, and verify the imported listing.
-6. Record evidence in the issue.
+6. In local `~/.config/aidevops/repos.json`, set `cloudron_package.monitor_compatibility` to `true` for this repo. Keep `monitor_upstream` off until aidevops supports tag-only upstreams (strfry publishes tags, not GitHub releases).
+7. Record evidence in the issue.
 
 ## Acceptance Criteria
 
