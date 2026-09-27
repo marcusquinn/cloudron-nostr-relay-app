@@ -56,7 +56,7 @@ Format: `- [ ] tNNN Description @owner #tag ~estimate risk:level logged:date`
 - `risk:high` - Engaged: stay present, test thoroughly, potential regressions
 
 <!--TOON:meta{version,format,updated}:
-1.1,todo-md+toon,{{DATE}}
+1.1,todo-md+toon,2026-09-27
 -->
 
 ## Ready

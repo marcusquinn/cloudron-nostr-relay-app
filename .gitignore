@@ -3,3 +3,25 @@
 .agents/tmp/
 .agents/memory/
 .aidevops.json
+
+# Per-machine aidevops command links (absolute local paths)
+.agents/commands
+.windsurf/
+
+# Cloudron
+.cloudron/
+
+# Build artifacts
+*.tar.gz
+
+# OS
+.DS_Store
+
+# Secrets
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json

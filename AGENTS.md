@@ -4,17 +4,25 @@
 
 ## Quick Reference
 
-- **Build**: `# TODO: add build command`
-- **Test**: `# TODO: add test command`
-- **Deploy**: `# TODO: add deploy command`
+- **Validate**: `cloudron-package-helper.sh validate`
+- **Build**: `cloudron-package-helper.sh build`
+- **Test install**: `cloudron-package-helper.sh install relay-test`
+- **Release checks**: `cloudron-package-helper.sh check-compatibility` and
+  `cloudron-package-helper.sh preflight-release vX.Y.Z`
 
 ## Project Overview
 
-<!-- Brief description of what this project does and why it exists. -->
+Cloudron app package for a private Nostr relay based on
+[strfry](https://github.com/hoytech/strfry). It serves the relay WebSocket
+behind Cloudron TLS and restricts writes to an operator-managed npub allowlist,
+so it does not become an open public relay.
 
 ## Architecture
 
-<!-- Key architectural decisions, tech stack, directory structure. -->
+Mirror the structure of `marcusquinn/cloudron-netbird-app`: `Dockerfile` pinned to
+the Cloudron base image, `start.sh`, `CloudronManifest.json`, `docs/` for
+operator guides, and the Cloudron release and catalog-publish workflows.
+strfry is GPL-3.0; this repository's packaging files are MIT.
 
 ## Conventions
 
