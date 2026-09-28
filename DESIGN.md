@@ -2,6 +2,9 @@
 version: alpha
 name: cloudron-nostr-relay-app
 description: cloudron-nostr-relay-app interface design system
+assetProvenance:
+  logo: "Original relay-lock artwork drawn procedurally for this package."
+  hero: "Original relay signal artwork drawn procedurally for this package."
 colors:
   # Canonical palette (required: primary; recommended MD3 baseline families: secondary, tertiary, error, surface, background, outline)
   primary: "#{hex}"
