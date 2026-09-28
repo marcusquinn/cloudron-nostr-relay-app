@@ -40,4 +40,11 @@ strfry is GPL-3.0; this repository's packaging files are MIT.
 | `TODO.md` | Task tracking |
 | `CHANGELOG.md` | Version history |
 
+## Package Runtime
+
+- `CloudronManifest.json` declares the Cloudron package contract.
+- `start.sh` generates the persistent strfry config and always starts closed.
+- `plugins/allowlist.py` is the write-policy boundary; changes must preserve
+  fail-closed behaviour.
+
 <!-- AI-CONTEXT-END -->

@@ -1,0 +1,14 @@
+name: Linked Issue Check
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  issues: read
+  pull-requests: read
+  statuses: write
+
+jobs:
+  check:
+    uses: marcusquinn/aidevops/.github/workflows/linked-issue-check-reusable.yml@f5ac0cecd63b315a7409ed492216bb6a153b94a3

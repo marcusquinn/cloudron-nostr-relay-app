@@ -1,4 +1,4 @@
-# cloudron-nostr-relay-app
+# Private Nostr Relay for Cloudron
 
 <!-- aidevops:badges:start -->
 <!-- managed by aidevops badges; edit the template, not this block -->
@@ -16,7 +16,28 @@
 <!-- Project Links -->
 [![GitHub repository](https://img.shields.io/badge/github-repository-181717.svg?logo=github)](https://github.com/marcusquinn/cloudron-nostr-relay-app)
 <!-- aidevops:badges:end -->
-Private allowlisted Nostr relay (strfry) - Cloudron app package
+This package runs [strfry](https://github.com/hoytech/strfry) as a Nostr relay
+behind Cloudron TLS. It accepts writes only from public keys listed in the
+operator-managed allowlist; an empty allowlist rejects every write.
+
+## Quick start
+
+1. Install the app in Cloudron.
+2. Add writer public keys to `/app/data/allowlist.txt` using the Cloudron File
+   Manager or `cloudron exec`.
+3. Point Nostr clients at `wss://<app-domain>/`.
+
+The relay database and allowlist are stored in `/app/data` and included in
+Cloudron backup and restore. See the [operator documentation](docs/README.md).
+
+## Development
+
+```bash
+cloudron-package-helper.sh validate
+cloudron-package-helper.sh check-compatibility
+bash test/package-test.sh
+bash test/relay-smoke.sh
+```
 
 <!-- aidevops:managed-readme:start -->
 <!-- managed by aidevops; refresh with managed-readme-helper.sh sync -->

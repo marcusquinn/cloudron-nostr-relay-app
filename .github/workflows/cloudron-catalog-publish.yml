@@ -1,0 +1,32 @@
+name: Publish Cloudron Catalog
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: cloudron-package-helper.sh validate
+      - run: cloudron-package-helper.sh check-compatibility
+      - run: bash test/package-test.sh
+      - run: bash test/relay-smoke.sh
+
+  publish:
+    if: github.event_name == 'push'
+    needs: validate
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Require managed release configuration
+        run: |
+          printf 'Publication requires the managed catalog release configuration.\n'

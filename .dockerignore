@@ -1,0 +1,11 @@
+.git
+.github
+.agents
+docs
+media
+test
+todo
+README.md
+DESIGN.md
+CONTRIBUTING.md
+SECURITY.md
