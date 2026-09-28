@@ -13,7 +13,8 @@ main() {
     trap 'rm -rf "${allowlist:-}"' EXIT
 
     printf '%064d\n' 1 > "${allowlist}/allowlist.txt"
-    ALLOWLIST_PATH="${allowlist}/allowlist.txt" PYTHONPATH="${ROOT_DIR}" python3 - <<'PY'
+    ALLOWLIST_PATH="${allowlist}/allowlist.txt" PYTHONDONTWRITEBYTECODE=1 \
+        PYTHONPATH="${ROOT_DIR}" python3 - <<'PY'
 import importlib.util
 import json
 import os

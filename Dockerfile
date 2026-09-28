@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim@sha256:ef95d00655aa3f6c23fdda5ff7c153010abc86e77bd4e0147bada04115e5d705 AS builder
+FROM --platform=linux/amd64 debian:bookworm-slim@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251 AS builder
 
 ARG STRFRY_VERSION=1.1.3
 RUN apt-get update && apt-get install -y --no-install-recommends \

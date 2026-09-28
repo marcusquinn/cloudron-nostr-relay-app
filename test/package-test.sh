@@ -20,7 +20,7 @@ main() {
     grep -Fq 'plugin = "/app/code/plugins/allowlist.py"' "${ROOT_DIR}/start.sh" || fail "write policy plugin is not configured" || return 1
     grep -Fq 'blocked: pubkey is not on the relay allowlist' "${ROOT_DIR}/plugins/allowlist.py" || fail "plugin rejection message is missing" || return 1
     bash -n "${ROOT_DIR}/start.sh"
-    python3 -m py_compile "${ROOT_DIR}/plugins/allowlist.py"
+    PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile "${ROOT_DIR}/plugins/allowlist.py"
     shellcheck "${ROOT_DIR}/start.sh" "${ROOT_DIR}/test/package-test.sh" "${ROOT_DIR}/test/relay-smoke.sh" "${ROOT_DIR}/scripts/publish-cloudron-catalog.sh"
     printf 'PASS: package contract\n'
     return 0
