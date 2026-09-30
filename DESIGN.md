@@ -19,23 +19,23 @@ colors:
 typography:
   # Recommended levels: headline-display, headline-lg, headline-md, body-lg, body-md, body-sm, label-lg, label-md, label-sm
   headline-display:
-    fontFamily: {family}
-    fontSize: {size}
+    fontFamily: "{family}"
+    fontSize: "{size}"
     fontWeight: 700
     lineHeight: 1.1
     letterSpacing: -0.02em
   headline-lg:
-    fontFamily: {family}
+    fontFamily: "{family}"
     fontSize: 32px
     fontWeight: 600
     lineHeight: 1.2
   body-md:
-    fontFamily: {family}
+    fontFamily: "{family}"
     fontSize: 16px
     fontWeight: 400
     lineHeight: 1.5
   label-md:
-    fontFamily: {family}
+    fontFamily: "{family}"
     fontSize: 14px
     fontWeight: 500
     lineHeight: 1.4
