@@ -31,10 +31,10 @@ on:
 
 jobs:
   metrics:
-    uses: marcusquinn/aidevops/.github/workflows/loc-badge-reusable.yml@main
+    uses: marcusquinn/aidevops/.github/workflows/loc-badge-reusable.yml@fb06e1b92880fefd839187f8347ae3043b63f3c7
     with:
       # Keep this equal to the ref on `uses:` so helper code is pinned with the reusable YAML.
-      aidevops_ref: main
+      aidevops_ref: fb06e1b92880fefd839187f8347ae3043b63f3c7
       # Optional input overrides — uncomment and edit as needed:
       # top_n: 8
       # skip_if_fresh_hours: 24
