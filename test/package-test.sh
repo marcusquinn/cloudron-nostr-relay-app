@@ -20,7 +20,14 @@ main() {
     version="$(jq -r '.version' "${manifest}")"
     upstream_version="$(jq -r '.upstreamVersion' "${manifest}")"
     [[ "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || fail "manifest version is not semver" || return 1
-    grep -Fq "## [${version}]" "${ROOT_DIR}/CHANGELOG" || fail "CHANGELOG has no entry for ${version}" || return 1
+    # Mirror the Cloudron CLI parser (src/helper.js parseChangelog): an exact
+    # "[X.Y.Z]" line followed by non-empty lines up to the next "[" line.
+    awk -v header="[${version}]" '
+        $0 == header { found = 1; next }
+        found && /^\[/ { exit }
+        found && NF { entries += 1 }
+        END { exit !(found && entries > 0) }
+    ' "${ROOT_DIR}/CHANGELOG" || fail "CHANGELOG has no Cloudron-format \"[${version}]\" entry" || return 1
     jq -e '.stable == true and (.versions | type == "object")' "${ROOT_DIR}/CloudronVersions.json" >/dev/null || fail "CloudronVersions.json is not a valid catalog" || return 1
     [[ -s "${ROOT_DIR}/DESCRIPTION.md" ]] || fail "DESCRIPTION.md is missing" || return 1
     [[ "$(grep -c '^FROM cloudron/base:6.0.0@sha256:' "${ROOT_DIR}/Dockerfile")" == "2" ]] || fail "builder and runtime must use the same digest-pinned Cloudron base" || return 1
