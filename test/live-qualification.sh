@@ -8,6 +8,7 @@
 #   test/live-qualification.sh <app-location> full [--with-backup-restore]
 #   test/live-qualification.sh <app-location> seed <state-file>
 #   test/live-qualification.sh <app-location> verify-seed <state-file>
+#   test/live-qualification.sh <app-location> update-from-catalog <version>
 #
 # Requires: cloudron CLI (logged in), curl, jq and nak on PATH (or NAK=...).
 #
@@ -21,6 +22,12 @@
 #   is saved to <state-file> (mode 600) for verify-seed after an app update.
 # verify-seed: checks that the seeded event and allowlist entry survived and the
 #   write policy still applies, then removes the seeded allowlist entry.
+# update-from-catalog: updates the app to <version> using the manifest and image
+#   digest published in the public catalog (VERSIONS_URL), then checks the
+#   running digest. Plain `cloudron update` inside this repository uploads the
+#   local source and builds it on the server instead, and CLI 8.2.6 cannot
+#   update from a versions URL, so this mode sends the published manifest from
+#   an empty scratch directory.
 #
 # full and verify-seed remove their marked allowlist lines on exit. Test events
 # stay in the test database.
@@ -31,6 +38,7 @@ APP="${1:-}"
 MODE="${2:-}"
 MODE_ARG="${3:-}"
 NAK="${NAK:-nak}"
+VERSIONS_URL="${VERSIONS_URL:-https://raw.githubusercontent.com/marcusquinn/cloudron-nostr-relay-app/main/CloudronVersions.json}"
 RUN_ID="$(date +%s)-$$"
 MARKER="# live-qualification ${RUN_ID}"
 RELAY_URL="wss://${APP}"
@@ -259,15 +267,40 @@ run_verify_seed() {
     return 0
 }
 
+run_update_from_catalog() {
+    local version="$1"
+    local scratch image running
+    [[ -n "${version}" ]] || fail "update-from-catalog needs a version" || return 1
+    scratch="$(mktemp -d)"
+    curl -fsS "${VERSIONS_URL}" |
+        jq -e --arg version "${version}" '.versions[$version] | select(.publishState == "published") | .manifest' \
+            >"${scratch}/CloudronManifest.json" ||
+        { rm -rf "${scratch}"; fail "version ${version} is not published in ${VERSIONS_URL}" || return 1; }
+    image="$(jq -r '.dockerImage' "${scratch}/CloudronManifest.json")"
+    [[ "${image}" == *@sha256:* ]] || { rm -rf "${scratch}"; fail "catalog image is not digest-pinned: ${image}" || return 1; }
+    print_app
+    # A manifest with dockerImage makes the CLI send it unchanged ("from app
+    # store"), with a pre-update backup, instead of building local source.
+    (cd "${scratch}" && cloudron update --app "${APP}" </dev/null) || { rm -rf "${scratch}"; return 1; }
+    rm -rf "${scratch}"
+    wait_for_http || return 1
+    running="$(cloudron status --app "${APP}" | awk '/^Docker image:/ { print $NF }')"
+    [[ "${running}" == "${image}" ]] || fail "running image ${running} is not the catalog image ${image}" || return 1
+    print_app
+    printf 'PASS: updated %s to catalog %s (%s)\n' "${APP}" "${version}" "${image}"
+    return 0
+}
+
 main() {
     [[ -n "${APP}" && -n "${MODE}" ]] ||
-        fail "usage: test/live-qualification.sh <app-location> full [--with-backup-restore] | seed <state-file> | verify-seed <state-file>" || return 1
+        fail "usage: test/live-qualification.sh <app-location> full [--with-backup-restore] | seed <state-file> | verify-seed <state-file> | update-from-catalog <version>" || return 1
     command -v "${NAK}" >/dev/null || fail "nak not found; set NAK=/path/to/nak" || return 1
     cloudron status --app "${APP}" >/dev/null || fail "app ${APP} not found on the logged-in Cloudron" || return 1
     case "${MODE}" in
         full) run_full "${MODE_ARG}" || return 1 ;;
         seed) run_seed "${MODE_ARG}" || return 1 ;;
         verify-seed) run_verify_seed "${MODE_ARG}" || return 1 ;;
+        update-from-catalog) run_update_from_catalog "${MODE_ARG}" || return 1 ;;
         *) fail "unknown mode: ${MODE}" || return 1 ;;
     esac
     return 0

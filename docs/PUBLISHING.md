@@ -62,11 +62,20 @@ keys and removes its allowlist entries on exit:
 # NIP-11, rejected and accepted writes, restart, backup and restore
 test/live-qualification.sh relay-test.example.com full --with-backup-restore
 
-# Update path: seed on the old version, update, then verify
+# Update path: seed on the old version, update to the published new
+# version, then verify
 test/live-qualification.sh relay-test.example.com seed ./update-seed.json
-cloudron update --app relay-test.example.com
+test/live-qualification.sh relay-test.example.com update-from-catalog 0.1.1
 test/live-qualification.sh relay-test.example.com verify-seed ./update-seed.json
 ```
+
+Do not run plain `cloudron update --app …` from this repository. With no
+`--image`, Cloudron CLI 8.2.6 uploads the local source and builds an
+unpublished `local/…` image on the server, and it has no option to update from
+a versions URL. `update-from-catalog` sends the published manifest and digest
+from an empty directory instead, then checks that the running image is the
+catalog digest. Operators update from the dashboard, where Cloudron offers new
+versions from the versions URL.
 
 The state file holds a throwaway private key; delete it afterwards. Record the
 results in `test/QUALIFICATION.md`.
