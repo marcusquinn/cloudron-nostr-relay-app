@@ -1,16 +1,62 @@
 # Publishing to Cloudron Community Apps
 
-`CloudronVersions.json` is generated only by the catalog workflow; never edit
-it by hand. Add the repository secret `CLOUDRON_RELEASE_PAT` as a
-repository-scoped fine-grained token with only Contents read/write access.
+`CloudronVersions.json` is the public package catalog. It is written only by
+the `cloudron-catalog-publish.yml` workflow; never edit it by hand. Merging a
+completed package update to `main` authorizes the workflow to publish that
+manifest version.
 
-Before Community Apps submission, perform a live qualification:
+Public versions URL:
+`https://raw.githubusercontent.com/marcusquinn/cloudron-nostr-relay-app/main/CloudronVersions.json`
+
+## Release workflow
+
+1. Update `CloudronManifest.json` (`version`, and `upstreamVersion` with the
+   Dockerfile's `STRFRY_VERSION`/`STRFRY_COMMIT`) and add a matching `CHANGELOG`
+   entry. `test/package-test.sh` checks that these agree.
+2. Open a pull request. CI runs the package, plugin and publisher tests, builds
+   the image and runs `test/runtime-smoke.sh` against it.
+3. Merge to `main`. If the manifest version is not in the catalog yet, the
+   workflow:
+   - reruns the tests and the container smoke test;
+   - builds the amd64 image and pushes it to
+     `ghcr.io/marcusquinn/cloudron-nostr-relay-app`, with build provenance;
+   - waits until the exact digest can be pulled anonymously;
+   - runs `scripts/publish-cloudron-catalog.sh`, which adds the version in
+     testing state, checks the generated entry and digest, then promotes it to
+     published;
+   - attests and verifies the catalog, commits only `CloudronVersions.json`,
+     pushes the commit and `v<VERSION>` tag together, and creates the GitHub
+     release.
+4. A merge that does not change the manifest version republishes nothing. It
+   re-verifies the existing image and catalog entry and fills in a missing
+   GitHub release.
+
+The first publication creates the GHCR package. If the anonymous pull check
+times out, set the package visibility to public under the repository's
+Packages settings and rerun the workflow.
+
+Published entries are append-only. For a bad release, run
+`cloudron versions revoke`, bump the version and publish a new entry.
+
+## Release credential
+
+`main` is not a protected branch, so the workflow pushes the catalog commit
+and tag with its own job token. If `main` is protected later, add the
+repository secret `CLOUDRON_RELEASE_PAT`: a fine-grained token limited to this
+repository with only `Contents: Read and write`. The workflow uses it only for
+the final catalog commit and tag push.
+
+## Qualification before Community Apps submission
+
+Use a disposable app on a non-production location:
 
 ```bash
-cloudron install --versions-url <PUBLIC_VERSIONS_URL> --location relay-test
+cloudron install --versions-url https://raw.githubusercontent.com/marcusquinn/cloudron-nostr-relay-app/main/CloudronVersions.json --location relay-test.example.com
 ```
 
-Confirm allowlisted and rejected writes, restart persistence, upgrade, health
-checks, and backup/restore. Then submit the public versions URL at
-[ca.cloudron.io](https://ca.cloudron.io). Do not use a production relay for
-qualification.
+Confirm allowlisted and rejected writes, NIP-11 output, restart persistence,
+update to a newer version, health checks, and backup/restore. Record the
+results in `test/QUALIFICATION.md`.
+
+Then sign in at [ca.cloudron.io](https://ca.cloudron.io), add the versions
+URL, and check the imported icon, media, description and changelog.

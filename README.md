@@ -22,22 +22,36 @@ operator-managed allowlist; an empty allowlist rejects every write.
 
 ## Quick start
 
-1. Install the app in Cloudron.
-2. Add writer public keys to `/app/data/allowlist.txt` using the Cloudron File
-   Manager or `cloudron exec`.
-3. Point Nostr clients at `wss://<app-domain>/`.
+1. Install the app from Cloudron Community Apps, or with the CLI:
 
-The relay database and allowlist are stored in `/app/data` and included in
-Cloudron backup and restore. See the [operator documentation](docs/README.md).
+   ```bash
+   cloudron install --versions-url https://raw.githubusercontent.com/marcusquinn/cloudron-nostr-relay-app/main/CloudronVersions.json --location relay.example.com
+   ```
+
+2. Add writer public keys (`npub` or hexadecimal) to `/app/data/allowlist.txt`
+   using the Cloudron File Manager or `cloudron exec`. See
+   [Allowlist management](docs/ALLOWLIST.md).
+3. Optionally set the relay name and contact shown to clients. See
+   [Relay configuration](docs/CONFIGURATION.md).
+4. Point Nostr clients at `wss://<app-domain>/`.
+
+Reads are public: anyone with the address can read stored events. The relay
+database and allowlist are stored in `/app/data` and included in Cloudron
+backup and restore. See the [operator documentation](docs/README.md).
 
 ## Development
 
 ```bash
 cloudron-package-helper.sh validate
-cloudron-package-helper.sh check-compatibility
 bash test/package-test.sh
 bash test/relay-smoke.sh
+bash test/publish-catalog-test.sh
+docker build --platform linux/amd64 -t nostr-relay-smoke:candidate .
+bash test/runtime-smoke.sh nostr-relay-smoke:candidate   # needs nak on PATH
 ```
+
+Publishing is automated on merge to `main`; see
+[Publishing](docs/PUBLISHING.md).
 
 <!-- aidevops:managed-readme:start -->
 <!-- managed by aidevops; refresh with managed-readme-helper.sh sync -->
