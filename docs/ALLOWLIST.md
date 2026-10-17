@@ -13,7 +13,19 @@ npub1...
 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
 ```
 
-Use Cloudron's File Manager or `cloudron exec` to edit the file. The policy
-plugin reads a complete fresh copy before every submitted event, so changes do
-not need an app restart. Invalid, missing, or partially written entries never
-grant access.
+An `npub` must be lowercase with a valid NIP-19 checksum; copy it from your
+client rather than typing it. Never put a private key (`nsec`) in this file.
+It is ignored, but the file is readable by anyone with app access.
+
+Use Cloudron's File Manager or `cloudron exec` to edit the file, for example:
+
+```bash
+cloudron exec --app relay.example.com -- sh -c 'echo "npub1..." >> /app/data/allowlist.txt'
+```
+
+The policy plugin reads a complete fresh copy before every submitted event, so
+changes do not need an app restart. Invalid, missing, or partially written
+entries never grant access.
+
+Clients that are not on the list see the event rejected with
+`blocked: pubkey is not on the relay allowlist`.
