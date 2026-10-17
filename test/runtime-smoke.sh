@@ -80,13 +80,15 @@ start_container() {
 publish() {
     local secret="$1"
     local content="$2"
-    "${NAK}" event --sec "${secret}" -c "${content}" "${RELAY_URL}" 2>&1
+    # nak reads an event from stdin when stdin is not a terminal (as in CI),
+    # so give it an explicitly empty stdin plus --github.
+    "${NAK}" event --github --sec "${secret}" -c "${content}" "${RELAY_URL}" 2>&1 </dev/null
     return $?
 }
 
 count_events() {
     local author="$1"
-    "${NAK}" req -a "${author}" -k 1 "${RELAY_URL}" 2>/dev/null | jq -s 'length'
+    "${NAK}" req -a "${author}" -k 1 "${RELAY_URL}" 2>/dev/null </dev/null | jq -s 'length'
     return 0
 }
 
