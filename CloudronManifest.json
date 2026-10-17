@@ -4,7 +4,7 @@
   "author": "Marcus Quinn <marcus@marcusquinn.com>",
   "description": "file://DESCRIPTION.md",
   "tagline": "Private Nostr relay with allowlisted writes",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "upstreamVersion": "1.1.3",
   "healthCheckPath": "/",
   "httpPort": 7777,
@@ -24,7 +24,12 @@
     "privacy",
     "self-hosted"
   ],
-  "postInstallMessage": "The relay rejects every write until you add an npub or hexadecimal public key to /app/data/allowlist.txt. See the Allowlist guide before connecting a client.",
+  "postInstallMessage": "file://POSTINSTALL.md",
+  "checklist": {
+    "allowlist-writer": {
+      "message": "Add at least one npub or hexadecimal public key to `/app/data/allowlist.txt` with the File Manager. Until then the relay rejects every write."
+    }
+  },
   "changelog": "file://CHANGELOG",
   "packagerName": "Marcus Quinn",
   "packagerUrl": "https://github.com/marcusquinn",

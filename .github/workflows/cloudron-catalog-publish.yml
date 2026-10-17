@@ -71,13 +71,16 @@ jobs:
           test "$(cloudron --version)" = "${CLOUDRON_CLI_VERSION}"
 
       - name: Dry-run catalog entry with the real Cloudron CLI
-        # The publisher test stubs the CLI. This runs the real manifest,
-        # DESCRIPTION.md and CHANGELOG parsing on a scratch copy of the catalog.
+        # The publisher test stubs the CLI. This runs the real manifest and
+        # file:// reference parsing (DESCRIPTION.md, CHANGELOG, POSTINSTALL.md,
+        # icon) on a scratch copy of the catalog.
         run: |
           set -euo pipefail
           scratch="${RUNNER_TEMP}/catalog-dry-run"
           mkdir -p "${scratch}"
-          cp CloudronManifest.json CloudronVersions.json CHANGELOG DESCRIPTION.md logo.png "${scratch}/"
+          cp CloudronManifest.json CloudronVersions.json "${scratch}/"
+          jq -r '.. | strings | select(startswith("file://")) | ltrimstr("file://")' CloudronManifest.json |
+            while IFS= read -r referenced; do cp "${referenced}" "${scratch}/"; done
           cd "${scratch}"
           version="$(jq -r '.version' CloudronManifest.json)"
           if jq -e --arg version "${version}" '.versions[$version] != null' CloudronVersions.json >/dev/null; then
@@ -86,7 +89,7 @@ jobs:
           fi
           cloudron versions add --state testing --image "registry.invalid/dry-run@sha256:$(printf '0%.0s' $(seq 64))"
           cloudron versions verify
-          jq -e --arg version "${version}" '.versions[$version].manifest.changelog | length > 0' CloudronVersions.json >/dev/null
+          jq -e --arg version "${version}" '.versions[$version].manifest | (.changelog | length > 0) and (.postInstallMessage | contains("$CLOUDRON-APP-FQDN"))' CloudronVersions.json >/dev/null
 
       - name: Read manifest metadata
         id: manifest

@@ -54,8 +54,21 @@ Use a disposable app on a non-production location:
 cloudron install --versions-url https://raw.githubusercontent.com/marcusquinn/cloudron-nostr-relay-app/main/CloudronVersions.json --location relay-test.example.com
 ```
 
-Confirm allowlisted and rejected writes, NIP-11 output, restart persistence,
-update to a newer version, health checks, and backup/restore. Record the
+Then run `test/live-qualification.sh` (needs the logged-in `cloudron` CLI,
+`curl`, `jq` and [nak](https://github.com/fiatjaf/nak)). It uses throwaway
+keys and removes its allowlist entries on exit:
+
+```bash
+# NIP-11, rejected and accepted writes, restart, backup and restore
+test/live-qualification.sh relay-test.example.com full --with-backup-restore
+
+# Update path: seed on the old version, update, then verify
+test/live-qualification.sh relay-test.example.com seed ./update-seed.json
+cloudron update --app relay-test.example.com
+test/live-qualification.sh relay-test.example.com verify-seed ./update-seed.json
+```
+
+The state file holds a throwaway private key; delete it afterwards. Record the
 results in `test/QUALIFICATION.md`.
 
 Then sign in at [ca.cloudron.io](https://ca.cloudron.io), add the versions
