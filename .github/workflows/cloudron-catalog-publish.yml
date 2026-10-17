@@ -289,7 +289,10 @@ jobs:
           git tag -a "v${RELEASE_VERSION}" -m "Release v${RELEASE_VERSION}"
           # aidevops:trust-boundary — expose the repository-scoped credential only after validation.
           gh auth setup-git
-          git push --atomic origin HEAD:main "v${RELEASE_VERSION}"
+          if ! git push --atomic origin HEAD:main "v${RELEASE_VERSION}"; then
+            printf '::error::Catalog push for %s was rejected, most likely because main advanced after %s. Nothing was published to the catalog. Rerun this workflow from the current main.\n' "${RELEASE_VERSION}" "${BEFORE_SHA}" >&2
+            exit 1
+          fi
 
       - name: Create GitHub release
         env:
