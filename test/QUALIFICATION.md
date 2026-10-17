@@ -28,7 +28,34 @@ test/live-qualification.sh relay-test.<domain> full --with-backup-restore
 test/live-qualification.sh relay-test.<domain> seed <state-file>
 ```
 
-## Update 0.1.0 → 0.1.1
+## 0.1.1 and update from 0.1.0 — 2026-10-17
 
-Pending: run `verify-seed` with the state file seeded on 0.1.0, after the app
-updates to 0.1.1.
+- Image: `ghcr.io/marcusquinn/cloudron-nostr-relay-app@sha256:e1ecfe0d31151203bd84013999e49b479643e8255b59c7c7949195716e212d13`
+- Update applied with the published catalog manifest and digest
+  (`update-from-catalog`), including Cloudron's automatic pre-update backup.
+
+| Check | Result |
+|-------|--------|
+| Event and allowlist entry seeded on 0.1.0 present after the update to 0.1.1 | Pass |
+| After update: seeded key still writes, non-allowlisted write rejected and not stored | Pass |
+| Running image equals the catalog 0.1.1 digest | Pass |
+| Restore of the 0.1.0 pre-update backup returns the app to 0.1.0 with the catalog image | Pass |
+| Full suite on 0.1.1 (NIP-11, writes, restart, backup/restore, logs) | Pass |
+| `update-from-catalog` refuses an unpublished version | Pass |
+
+Commands:
+
+```bash
+test/live-qualification.sh relay-test.<domain> update-from-catalog 0.1.1
+test/live-qualification.sh relay-test.<domain> verify-seed <state-file>
+test/live-qualification.sh relay-test.<domain> full --with-backup-restore
+```
+
+Note: a first update attempt used plain `cloudron update` from the
+repository. It built the local source on the server (`local/…` image) rather
+than the catalog image. That result was discarded, and the app was restored to
+the 0.1.0 pre-update backup before the update above. `docs/PUBLISHING.md`
+warns against this path.
+
+Not covered: the dashboard "update available" prompt and Cloudron automatic
+updates from the versions URL. Both are Cloudron server behaviour.
