@@ -2,20 +2,15 @@
 
 <!-- aidevops:badges:start -->
 <!-- managed by aidevops badges; edit the template, not this block -->
-<!-- Build & Quality Status -->
-[![GitHub Actions](https://github.com/marcusquinn/cloudron-nostr-relay-app/actions/workflows/loc-badge.yml/badge.svg?branch=main)](https://github.com/marcusquinn/cloudron-nostr-relay-app/actions/workflows/loc-badge.yml)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/marcusquinn/cloudron-nostr-relay-app/blob/main/LICENSE)
+[![Latest release](https://img.shields.io/badge/release-latest-blue.svg)](https://github.com/marcusquinn/cloudron-nostr-relay-app/releases/latest)
 
-<!-- License & Legal -->
-[![License](https://img.shields.io/badge/license-see%20file-yellow.svg)](https://github.com/marcusquinn/cloudron-nostr-relay-app/blob/main/LICENSE)
-
-<!-- Repository Metrics -->
 [![Lines of code](docs/metrics/badges/loc.svg)](docs/metrics/repo-metrics.md)
-[![Languages by lines of code](docs/metrics/badges/languages.svg)](docs/metrics/repo-metrics.md)
 [![Dependencies](docs/metrics/badges/dependencies.svg)](docs/metrics/repo-metrics.md)
 
-<!-- Project Links -->
-[![GitHub repository](https://img.shields.io/badge/github-repository-181717.svg?logo=github)](https://github.com/marcusquinn/cloudron-nostr-relay-app)
+[![Languages by lines of code](docs/metrics/badges/languages.svg)](docs/metrics/repo-metrics.md)
 <!-- aidevops:badges:end -->
+
 This package runs [strfry](https://github.com/hoytech/strfry) as a Nostr relay
 behind Cloudron TLS. It accepts writes only from public keys listed in the
 operator-managed allowlist; an empty allowlist rejects every write.

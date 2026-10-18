@@ -70,6 +70,7 @@ Format: `- [ ] tNNN Description @owner #tag ~estimate risk:level logged:date`
 
 - [ ] t4 Package a private strfry Nostr relay as a Cloudron app through Community Apps submission #feature #cloudron #interactive #auto-dispatch ~4.5h tier:standard ref:GH#1 logged:2026-09-27 -> [todo/tasks/t4-brief.md]
 - [ ] t5 Qualify strfry relay package on Cloudron and submit to Community Apps #ops #cloudron #interactive ~1h blocked-by:t4 ref:GH#2 logged:2026-09-27 -> [todo/tasks/t5-brief.md]
+- [ ] t7 fix: README badge block renders languages chart inline with badges #auto-dispatch #bug ref:GH#15 logged:2026-10-18 -> [todo/tasks/t7-brief.md]
 
 <!--TOON:backlog[0]{id,desc,owner,tags,est,risk,logged,status}:
 -->
