@@ -30,7 +30,7 @@ main() {
     ' "${ROOT_DIR}/CHANGELOG" || fail "CHANGELOG has no Cloudron-format \"[${version}]\" entry" || return 1
     jq -e '.stable == true and (.versions | type == "object")' "${ROOT_DIR}/CloudronVersions.json" >/dev/null || fail "CloudronVersions.json is not a valid catalog" || return 1
     [[ -s "${ROOT_DIR}/DESCRIPTION.md" ]] || fail "DESCRIPTION.md is missing" || return 1
-    [[ "$(grep -c '^FROM cloudron/base:6.0.0@sha256:' "${ROOT_DIR}/Dockerfile")" == "2" ]] || fail "builder and runtime must use the same digest-pinned Cloudron base" || return 1
+    [[ "$(grep -Ec '^FROM cloudron/base:6\.0\.1@sha256:7b1e729960c3ca312d26e886917ba89483241bba0219ff292858e10d9d5768ee( AS builder)?$' "${ROOT_DIR}/Dockerfile")" == "2" ]] || fail "builder and runtime must use the reviewed digest-pinned Cloudron 6.0.1 base" || return 1
     grep -Eq '^ARG STRFRY_COMMIT=[0-9a-f]{40}$' "${ROOT_DIR}/Dockerfile" || fail "strfry source commit is not pinned" || return 1
     grep -Fq "ARG STRFRY_VERSION=${upstream_version}" "${ROOT_DIR}/Dockerfile" || fail "Dockerfile strfry version does not match upstreamVersion" || return 1
     grep -Fq 'plugin = "/app/code/plugins/allowlist.py"' "${ROOT_DIR}/start.sh" || fail "write policy plugin is not configured" || return 1

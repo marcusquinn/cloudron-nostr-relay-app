@@ -1,6 +1,6 @@
 # Build and run on the same Cloudron base so strfry links against the runtime's
 # own libraries.
-FROM cloudron/base:6.0.0@sha256:9bed4c8fa880645f8e669041ee28febe941481d00e9445e3e5a5483cb541d09b AS builder
+FROM cloudron/base:6.0.1@sha256:7b1e729960c3ca312d26e886917ba89483241bba0219ff292858e10d9d5768ee AS builder
 
 ARG STRFRY_VERSION=1.1.3
 ARG STRFRY_COMMIT=16c00df04e264f4d68db5e10a48127f015c7824b
@@ -13,7 +13,7 @@ RUN git clone --branch "${STRFRY_VERSION}" --depth 1 --recurse-submodules https:
     test "$(git rev-parse HEAD)" = "${STRFRY_COMMIT}" && \
     make setup-golpe && make -j"$(nproc)"
 
-FROM cloudron/base:6.0.0@sha256:9bed4c8fa880645f8e669041ee28febe941481d00e9445e3e5a5483cb541d09b
+FROM cloudron/base:6.0.1@sha256:7b1e729960c3ca312d26e886917ba89483241bba0219ff292858e10d9d5768ee
 
 LABEL org.opencontainers.image.source="https://github.com/marcusquinn/cloudron-nostr-relay-app"
 
