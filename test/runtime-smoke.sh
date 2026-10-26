@@ -7,6 +7,8 @@
 # Usage: test/runtime-smoke.sh <image>
 # Requires: docker, curl, jq and nak (https://github.com/fiatjaf/nak) on PATH,
 # or NAK=/path/to/nak.
+# CI: test/runtime-smoke.sh --ci builds linux/amd64 and downloads the
+# checksum-pinned Linux nak client to a temporary directory (no root required).
 #
 # The test mimics the Cloudron runtime (read-only root filesystem, writable
 # /app/data, /tmp and /run, open-file hard limit 524288). It owns only one
@@ -23,6 +25,25 @@ CONTAINER="nostr-relay-smoke-${RUN_ID}"
 VOLUME="nostr-relay-smoke-${RUN_ID}"
 RELAY_URL=""
 HTTP_URL=""
+
+run_ci() (
+    local scratch image script_dir
+    scratch="$(mktemp -d)"
+    image="nostr-relay-smoke:${RUN_ID}"
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    trap 'docker image rm "${image}" >/dev/null 2>&1 || true; rm -rf -- "${scratch}"' EXIT
+    # Keep the client version and checksum paired with the former inline job.
+    curl --fail --silent --show-error --location \
+        'https://github.com/fiatjaf/nak/releases/download/v0.21.2/nak-v0.21.2-linux-amd64' \
+        --output "${scratch}/nak"
+    printf '%s  %s\n' \
+        '0acd56fea6ab1b9a0a68c8615670c6f8eff9e8878922442e387b94ee15266bb8' \
+        "${scratch}/nak" | sha256sum -c -
+    chmod 0755 "${scratch}/nak"
+    docker build --platform linux/amd64 --tag "${image}" "${script_dir}/.."
+    NAK="${scratch}/nak" bash "${script_dir}/runtime-smoke.sh" "${image}"
+    return 0
+)
 
 cleanup() {
     local status="$?"
@@ -151,4 +172,8 @@ main() {
     return 0
 }
 
-main "$@"
+if [[ "${IMAGE}" == "--ci" ]]; then
+    run_ci
+else
+    main "$@"
+fi
