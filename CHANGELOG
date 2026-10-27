@@ -1,6 +1,6 @@
-[Unreleased]
-* Update the builder and runtime to the same SHA-pinned Cloudron base 6.0.1, including its patched CA bundle.
-* Require the reviewed base image digest in the package contract test.
+[0.1.2]
+* Security update: build and run on the same SHA-pinned Cloudron base image 6.0.1 with its patched CA bundle. strfry stays at 1.1.3.
+* The package contract test requires the reviewed base image digest.
 
 [0.1.1]
 * The post-install message shows the `wss://` relay URL and how to edit the allowlist from the File Manager or Web Terminal.
