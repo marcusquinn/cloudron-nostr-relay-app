@@ -87,6 +87,52 @@
             "creationDate": "Sat, 17 Oct 2026 01:38:13 GMT",
             "ts": "Sat, 17 Oct 2026 01:38:13 GMT",
             "publishState": "published"
+        },
+        "0.1.2": {
+            "manifest": {
+                "id": "com.marcusquinn.cloudron.strfry",
+                "title": "Private Nostr Relay",
+                "author": "Marcus Quinn <marcus@marcusquinn.com>",
+                "description": "A private [Nostr](https://nostr.com) relay powered by\n[strfry](https://github.com/hoytech/strfry).\n\nOnly the public keys you list can publish events. Every other write is\nrejected, so the relay never becomes an open public relay. Anyone who knows\nthe address can still read events, so treat published content as public unless\nit is encrypted.\n\n### Features\n\n* Fast strfry relay with an LMDB database stored in Cloudron backups\n* Write allowlist of `npub` or hexadecimal public keys, read on every event, so\n  changes apply without a restart\n* Starts closed: an empty allowlist rejects every write\n* NIP-11 relay information (name, description, contact, operator key) set\n  through app environment variables\n* Real client IP addresses from Cloudron's reverse proxy\n",
+                "tagline": "Private Nostr relay with allowlisted writes",
+                "version": "0.1.2",
+                "upstreamVersion": "1.1.3",
+                "healthCheckPath": "/",
+                "httpPort": 7777,
+                "manifestVersion": 2,
+                "website": "https://github.com/marcusquinn/cloudron-nostr-relay-app",
+                "contactEmail": "marcus@marcusquinn.com",
+                "icon": "file://logo.png",
+                "documentationUrl": "https://github.com/marcusquinn/cloudron-nostr-relay-app/tree/main/docs",
+                "minBoxVersion": "9.1.0",
+                "memoryLimit": 536870912,
+                "addons": {
+                    "localstorage": {}
+                },
+                "tags": [
+                    "nostr",
+                    "relay",
+                    "privacy",
+                    "self-hosted"
+                ],
+                "postInstallMessage": "Your relay URL is `wss://$CLOUDRON-APP-FQDN`.\n\nThe relay **rejects every write** until you add a public key to\n`/app/data/allowlist.txt`, one `npub` or hexadecimal key per line. Edit the\nfile with this app's **File Manager** or **Web Terminal**. Changes apply to the\nnext event without a restart.\n\nReads are public. Never put a private key (`nsec`) in the allowlist. See the\n[allowlist guide](https://github.com/marcusquinn/cloudron-nostr-relay-app/blob/main/docs/ALLOWLIST.md).\n",
+                "checklist": {
+                    "allowlist-writer": {
+                        "message": "Add at least one npub or hexadecimal public key to `/app/data/allowlist.txt` with the File Manager. Until then the relay rejects every write."
+                    }
+                },
+                "changelog": "* Security update: build and run on the same SHA-pinned Cloudron base image 6.0.1 with its patched CA bundle. strfry stays at 1.1.3.\n* The package contract test requires the reviewed base image digest.\n",
+                "packagerName": "Marcus Quinn",
+                "packagerUrl": "https://github.com/marcusquinn",
+                "iconUrl": "https://raw.githubusercontent.com/marcusquinn/cloudron-nostr-relay-app/main/logo.png",
+                "mediaLinks": [
+                    "https://raw.githubusercontent.com/marcusquinn/cloudron-nostr-relay-app/main/media/hero.png"
+                ],
+                "dockerImage": "ghcr.io/marcusquinn/cloudron-nostr-relay-app@sha256:88dbd3135fd25a513fb67b9a0e2ea4c4e7c895650f33094984d56ac3f949cf40"
+            },
+            "creationDate": "Thu, 29 Oct 2026 00:22:32 GMT",
+            "ts": "Thu, 29 Oct 2026 00:22:33 GMT",
+            "publishState": "published"
         }
     }
 }
