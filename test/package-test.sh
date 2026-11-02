@@ -16,7 +16,7 @@ fail() {
 main() {
     local manifest="${ROOT_DIR}/CloudronManifest.json"
     local version upstream_version
-    jq -e '.id == "com.marcusquinn.cloudron.strfry" and .httpPort == 7777 and .healthCheckPath == "/" and .addons == {localstorage: {}} and .manifestVersion == 2 and .minBoxVersion == "10.0.0" and .packagerUrl == "https://github.com/marcusquinn" and .packageUrl == "https://github.com/marcusquinn/cloudron-nostr-relay-app" and .description == "file://DESCRIPTION.md" and (.iconUrl | startswith("https://")) and (.mediaLinks | length > 0)' "${manifest}" >/dev/null || fail "manifest contract failed" || return 1
+    jq -e '.id == "com.marcusquinn.cloudron.strfry" and .httpPort == 7777 and .healthCheckPath == "/" and .addons == {localstorage: {}} and .manifestVersion == 2 and .minBoxVersion == "10.0.0" and .packagerUrl == "https://github.com/marcusquinn/cloudron-nostr-relay-app" and .packageUrl == "https://github.com/marcusquinn/cloudron-nostr-relay-app" and .description == "file://DESCRIPTION.md" and (.iconUrl | startswith("https://")) and (.mediaLinks | length > 0)' "${manifest}" >/dev/null || fail "manifest contract failed" || return 1
     version="$(jq -r '.version' "${manifest}")"
     upstream_version="$(jq -r '.upstreamVersion' "${manifest}")"
     [[ "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || fail "manifest version is not semver" || return 1
