@@ -32,7 +32,7 @@
   },
   "changelog": "file://CHANGELOG",
   "packagerName": "Marcus Quinn",
-  "packagerUrl": "https://github.com/marcusquinn/cloudron-nostr-relay-app",
+  "packagerUrl": "https://github.com/marcusquinn",
   "packageUrl": "https://github.com/marcusquinn/cloudron-nostr-relay-app",
   "iconUrl": "https://raw.githubusercontent.com/marcusquinn/cloudron-nostr-relay-app/main/logo.png",
   "mediaLinks": [
